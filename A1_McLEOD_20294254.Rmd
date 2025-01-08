@@ -8,6 +8,8 @@ Assignment 1
 Aidan McLeod
 20294254
 
+Repository link: https://github.com/AidanMcLeod/BIOL432A1
+
 1. Loading the revised measurements csv generated in "dataGenerato.R" and "volumeEstimato.R:
 ```{r}
 library(dplyr)
