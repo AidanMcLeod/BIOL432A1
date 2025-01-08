@@ -1,0 +1,76 @@
+---
+title: "A1_McLEOD_20294254"
+author: "AHM"
+date: "2025-01-07"
+output: html_document
+---
+Assignment 1
+Aidan McLeod
+20294254
+
+1. Loading the revised measurements csv generated in "dataGenerato.R" and "volumeEstimato.R:
+```{r}
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+#load file
+limb_measurements <- read.csv("measurements.csv")
+head(limb_measurements)
+```
+
+2. Sorting the variables in the file into order:
+```{r}
+#sort data by species, then by observer, then by limb volume
+measurements_sorted <- limb_measurements %>% 
+  arrange(species_name, observer_name, Volume)
+```
+
+3. Table of the calculated average volumes for each species:
+```{r}
+#calculate average volume for each species 
+avg_volume <- measurements_sorted %>% 
+  group_by(species_name) %>% 
+  summarize(Average_Volume = mean(Volume, na.rm = TRUE))
+
+#display the average volume table
+avg_volume
+```
+4. Table of the number of observations by observers per species:
+```{r}
+#Count the number of observations for each combination of species and observer 
+observation_count <- measurements_sorted %>%
+  group_by(species_name, observer_name) %>% 
+  summarize(Num_Observations = n())
+
+#Display the observation count table
+observation_count
+```
+
+5. Boxplot of the distribution of limb volumes (cm^3) in each species:
+```{r}
+#Create boxplot comparison of limb volumes between species 
+ggplot(measurements_sorted, aes(x = species_name, y = Volume)) + 
+  geom_boxplot() + 
+  theme_minimal() + 
+  labs(title = "Comparison of Limb Volumes Across Species",
+       x = "Species",
+       y = "Limb Volume (cm^3)") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+6. Histogram panels showing the frequency distribution of limb volumes in each species:
+```{r}
+#Convert data to long format for easier plotting
+measurements_long <- measurements_sorted %>% 
+  gather(key = "Measurement_Type", value = "Value", Volume)
+
+#Create multi-panel plot histograms of limb volume by species
+ggplot(measurements_long, aes(x = Value)) +
+  geom_histogram(bins = 15, fill = "skyblue", color = "black", alpha = 0.7) +
+  facet_wrap(~ species_name, scales = "free_x") +
+  theme_minimal() +
+  labs(title = "Distribution of Limb Volume by Species",
+       x = "Limb Volume (cm³)",
+       y = "Frequency")
+```
