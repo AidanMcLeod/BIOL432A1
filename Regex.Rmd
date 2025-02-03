@@ -1,0 +1,46 @@
+---
+title: "Regex"
+author: "AHM"
+date: "2025-02-03"
+output: html_document
+---
+
+
+```{r}
+MData <- read.csv("measurements.csv")
+```
+
+```{r}
+library(dplyr)
+```
+
+```{r}
+MData <- MData %>%
+  mutate(Sp = gsub("^(\\w)\\w+ (\\w+)$", "\\1. \\2", species_name))
+```
+
+^(\\w) identifies the first letter (H), 
+\\w+ identifies the rest of the first part (omo),
+(\\w+)$ identifies the second part (sapiens)
+for the replace function, \\1. for the first letter followed by a period, 
+and then \\2 for the second part
+
+```{r}
+head(MData)
+```
+
+```{r}
+MData_short <- MData %>%
+  mutate(Sp = gsub("^(\\w)\\w+ (\\w+)$", "\\1. \\2", species_name)) %>%
+  select(Sp, everything(), -species_name)  # Reorder columns, putting Sp first
+```
+
+```{r}
+head(MData_short)
+```
+
+```{r}
+write.csv(MData_short, "MeasShort.csv", row.names = FALSE)
+```
+
+
